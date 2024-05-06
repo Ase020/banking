@@ -179,7 +179,7 @@
   }
 
   .profile-email {
-    @apply text-16 font-normal text-gray-600;
+    @apply text-16 font-normal text-gray-400;
   }
 
   .banks {
