@@ -12,8 +12,11 @@ import { Form } from "@/components/ui/form";
 import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { signIn, signUp } from "@/lib/actions/user.actions";
 
 function AuthForm({ type }: { type: string }) {
+  const router = useRouter();
   const [user, setUser] = React.useState(null);
   const [isLoading, setisLoading] = React.useState(false);
 
@@ -29,13 +32,49 @@ function AuthForm({ type }: { type: string }) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setisLoading(true);
-    console.log(values);
-    setisLoading(false);
-  }
+    console.log(data);
+
+    try {
+      // Sign up with Appwrite & create plainlink
+      if (type === "sign-up") {
+        const userData = {
+          email: data.email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address1: data.address1,
+          city: data.city,
+          state: data.state,
+          postalCode: data.postalCode,
+          dateOfBirth: data.dateOfBirth,
+          idNumber: data.idNumber,
+        };
+
+        const newUser = await signUp(userData);
+
+        setUser(newUser);
+      }
+
+      if (type === "sign-in") {
+        const response = await signIn({
+          email: data.email,
+          password: data.password,
+        });
+
+        if (response) {
+          router.push("/");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setisLoading(false);
+    }
+  };
 
   return (
     <section className="auth-form">
@@ -91,11 +130,18 @@ function AuthForm({ type }: { type: string }) {
                     placeholder="Enter your specific address"
                   />
 
+                  <CustomInput
+                    control={form.control}
+                    label="City"
+                    name="city"
+                    placeholder="ex: Nairobi"
+                  />
+
                   <div className="flex gap-4 flex-col md:flex-row">
                     <CustomInput
                       control={form.control}
-                      label="Town"
-                      name="town"
+                      label="State"
+                      name="state"
                       placeholder="ex: Nairobi"
                     />
 
@@ -158,8 +204,8 @@ function AuthForm({ type }: { type: string }) {
           <footer className="flex justify-center gap-1">
             <p className="text-14 font-normal text-gray-600">
               {type === "sign-in"
-                ? "Dont't have an account?"
-                : "Already have an account?"}
+                ? "Dont't have an account"
+                : "Already have an account"}
             </p>
 
             <Link
