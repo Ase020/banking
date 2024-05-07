@@ -36,7 +36,6 @@ function AuthForm({ type }: { type: string }) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setisLoading(true);
-    console.log(data);
 
     try {
       // Sign up with Appwrite & create plainlink
@@ -68,6 +67,7 @@ function AuthForm({ type }: { type: string }) {
         if (response) {
           router.push("/");
         }
+        console.log("Response: ", response);
       }
     } catch (error) {
       console.error(error);
