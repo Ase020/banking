@@ -44,14 +44,14 @@ function AuthForm({ type }: { type: string }) {
         const userData = {
           email: data.email,
           password: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          address1: data.address1,
-          city: data.city,
-          state: data.state,
-          postalCode: data.postalCode,
-          dateOfBirth: data.dateOfBirth,
-          idNumber: data.idNumber,
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          city: data.city!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dateOfBirth: data.dateOfBirth!,
+          ssn: data.ssn!,
         };
 
         const newUser = await signUp(userData);
@@ -100,7 +100,7 @@ function AuthForm({ type }: { type: string }) {
         </div>
       </header>
 
-      {!user ? (
+      {user ? (
         <div className="flex flex-col gap-4">
           <PlaidLink user={user} variant="primary" />
         </div>
@@ -166,7 +166,7 @@ function AuthForm({ type }: { type: string }) {
                     <CustomInput
                       control={form.control}
                       label="ID Number"
-                      name="idNumber"
+                      name="ssn"
                       placeholder="1234****"
                     />
                   </div>
